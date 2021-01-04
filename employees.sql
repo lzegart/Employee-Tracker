@@ -1,0 +1,24 @@
+DROP DATABASE IF EXISTS employees_db;
+
+CREATE DATABASE employees_db;
+
+USE employees_db;
+
+CREATE TABLE department (
+food VARCHAR(30) NOT NULL,
+score INTEGER
+);
+
+CREATE TABLE role (
+song VARCHAR(30) NOT NULL,
+artist VARCHAR(30),
+score INTEGER
+);
+
+CREATE TABLE employee (
+id INTEGER NOT NULL AUTO_INCREMENT,
+movie VARCHAR(50) NOT NULL,
+five_times BOOLEAN DEFAULT FALSE,
+score INTEGER,
+PRIMARY KEY (id)
+);
