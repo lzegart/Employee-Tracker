@@ -18,6 +18,9 @@ const start = () => {
             type: 'list',
             message: 'What would you like to do?',
             choices: ['View all employees', 'Search employee by name', 'Search employee by department', 'Search employee by role', 'Search employee by manager', 'Add employee', 'add department', 'role', 'employee'],
+            // Add/ view/ update
+            // roles/ department/ employee
+            // 
         })
 }
 
