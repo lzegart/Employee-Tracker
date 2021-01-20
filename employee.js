@@ -1,5 +1,7 @@
 const mysql = require('mysql');
 const inquirer = require('inquirer');
+require('dotenv').config()
+
 
 // connection for sql database
 const connection = mysql.createConnection({
@@ -19,130 +21,202 @@ const start = () => {
             message: 'What would you like to do?',
             choices:
                 [
-                    'View employee',
-                    'Add employee',
-                    'Update employee info',
-                    'Delete employee'
+                    'View departments, roles, employees, or managers',
+                    'Add employee, department, or role',
+                    'Update roles, managers, or departments',
+                    'Delete employee, role, or department',
+                    'Exit',
                 ]
         })
         .then((answer) => {
-            if (answer.task === 'View employee') {
-                viewEmployee();
-            } else if (answer.task === 'Add employee') {
-                addEmployee();
-            } else if (answer.task === 'Update employee info') {
-                updateEmployee();
-            } else if (answer.task === 'Delete employee') {
-                deleteEmployee();
+            if (answer.task === 'View departments, roles, employees, or managers') {
+                view();
+            } else if (answer.task === 'Add employee, department, or role') {
+                add();
+            } else if (answer.task === 'Update roles, managers, or departments') {
+                update();
+            } else if (answer.task === 'Delete employee, role, or department') {
+                deleteEmp();
+            } else if (answer.task === 'Exit') {
+                console.log("Goodbye")
+                connection.end();
+        }
+        });
+};
+
+const view = () => {
+    inquirer
+        .prompt({
+            name: 'viewQ',
+            type: 'list',
+            message: 'What would you like to view?',
+            choices:
+                [
+                    'View all employees',
+                    'View employees by role',
+                    'View employees by manager',
+                    'View departments',
+                    'View roles',
+                    'View managers',
+                    'Go back to starting menu'
+                ]
+        })
+        .then((answer) => {
+            const viewQ = answer.viewQ
+            if (viewQ === 'View all employees') {
+                const query = `SELECT * FROM employee`
+                connection.query(query, (err, res) => {
+                    if (err) throw err;
+                    for (let i = 0; i < res.length; i++) {
+                        console.log(res[i].first_name, res[i].last_name)
+                    }
+                    // console.table(res)
+                    start();
+                })
+            } else if (viewQ === 'View employees by role') {
+                // const query = `SELECT * FROM role`
+                connection.query(query, (err, res) => {
+                    if (err) throw err;
+                    console.table(res);
+                    start();
+                })
+            } else if (viewQ === 'View employees by manager') {
+                    // const query = `SELECT first_name, last_name, manager_id from employee`
+                    connection.query(query, (err, res) => {
+                        if (err) throw err;
+                        console.table(res);
+                        start();
+                    })
+            } else if (viewQ === 'View departments') {
+                const query = `SELECT * FROM department`
+                connection.query(query, (err, res) => {
+                    if (err) throw err;
+                    console.table(res);
+                    start();
+                })
+            } else if (viewQ === 'View roles') {
+                const query = `SELECT * FROM role`
+                connection.query(query, (err, res) => {
+                    if (err) throw err;
+                    console.table(res);
+                    start();
+                })
+            } else if (viewQ === 'View managers') {
+                const query = `SELECT manager_id, first_name, last_name FROM employee`
+                connection.query(query, (err, res) => {
+                    if (err) throw err;
+                    console.table(res);
+                    start();
+                })
+            } else if (viewQ === 'Go back to starting menu') {
+                start();
             }
         });
 };
 
-const viewEmployee = () => {
+const add = () => {
     inquirer
         .prompt({
-            name: 'viewEmp',
+            name: 'addQ',
             type: 'list',
-            message: 'How would you like to view employees?',
+            message: 'What would you like to add?',
             choices:
                 [
-                    'View all employess',
-                    'View employees by role',
-                    'View employees by manager'
+                    'Add employee',
+                    'Add department',
+                    'Add role',
+                    'Go back to starting menu'
                 ]
         })
         .then((answer) => {
-            const viewEmp = answer.viewEmp
-            if (viewEmp === 'View all employees') {
-                const query = 'SELECT * FROM employee'
-                connection.query(query, (err, res) => {
-                    if (err) throw err;
-                    start();
-                })
-            } else if (viewEmp === 'View employees by role') {
-                const query = 'SELECT * FROM role'
-                connection.query(query, (err, res) => {
-                    if (err) throw err;
-                    start();
-                })
-            // } else if (viewEmp ===
+            const addQ = answer.addQ
+            if (addQ === 'Add employee') {
+                inquirer.prompt([
+                    {
+                        name: 'addFirstName',
+                        type: 'input',
+                        message: 'What is the first name of the employee?',
+                    },
+                    {
+                        name: 'addLastName',
+                        type: 'input',
+                        message: 'What is the last name of the employee?',
+                    },
+                    {
+                        name: 'addRole',
+                        type: 'input',
+                        message: 'What is the role of the employee?',
+                    },
+                    {
+                        name: 'addManager',
+                        type: 'input',
+                        message: 'What is the name of the manager for the employee?',
+                    },
+                ])
+                    .then((answer) => {
+                        const newEmp = `INSERT INTO employee (first_name, last_name,)`
+                        connection.query()
+
+                        start();
+                    })
             }
         })
-};
 
-const addEmployee = () => {
+        // console.table(res)
+        start();
+}
+
+
+
+const update = () => {
     inquirer
-        .prompt([
-            {
-                name: 'addName',
-                type: 'input',
-                message: 'What is the name of the employee?',
-            },
-            {
-                name: 'addRole',
-                type: 'input',
-                message: 'What is the role of the employee?',
-            },
-            {
-                name: 'addDepartment',
-                type: 'input',
-                message: 'What department is the employee in?',
-            },
-            {
-                name: 'addManager',
-                type: 'input',
-                message: 'What is the name of the manager for the employee?',
-            },
-            {
-                name: 'addSalary',
-                type: 'input',
-                message: 'What is the salary of the employee?',
-            },
-        ])
-        .then((answer) => {
-            const query = ' '
-            connection.query(query, { employee: answer.employee }, (err, res) => {
-                res.forEach(({ x }) => console.log(y));
-                start();
-            })
+        .prompt({
+            name: 'updateQ',
+            type: 'list',
+            message: 'What would you like to update?',
+            choices:
+                [
+                    'Update role of employee',
+                    'Update manager',
+                    'Update department of employee',
+                    'Go back to starting menu'
+                ]
         })
-};
-
-const updateEmployee = () => {
-    inquirer
-        .prompt([
-            {
-                name: 'updateName',
-                type: 'input',
-                message: 'What is the name of the employee?',
-            },
-            {
-                name: 'updateRole',
-                type: 'input',
-                message: 'What is the role of the employee?',
-            },
-            {
-                name: 'updateDepartment',
-                type: 'input',
-                message: 'What department is the employee in?',
-            },
-            {
-                name: 'updateManager',
-                type: 'input',
-                message: 'What is the name of the manager for the employee?',
-            },
-        ])
         .then((answer) => {
-            const query = 'SELECT '
-            connection.query(query, {}, (err, res) => {
-                res.forEach(({ x }) => console.log(y));
-                start();
-            })
+
+            //     .prompt([
+            //     {
+            //         name: 'updateName',
+            //         type: 'input',
+            //         message: 'What is the name of the employee?',
+            //     },
+            //     {
+            //         name: 'updateRole',
+            //         type: 'input',
+            //         message: 'What is the role of the employee?',
+            //     },
+            //     {
+            //         name: 'updateDepartment',
+            //         type: 'input',
+            //         message: 'What department is the employee in?',
+            //     },
+            //     {
+            //         name: 'updateManager',
+            //         type: 'input',
+            //         message: 'What is the name of the manager for the employee?',
+            //     },
+            // ])
+            // .then((answer) => {
+            //     const query = 'SELECT '
+            //     connection.query(query, {}, (err, res) => {
+            //         res.forEach(({ x }) => console.log(y));
+            //         start();
+            //     })
 
         })
 };
 
-const deleteEmployee = () => {
+const deleteEmp = () => {
     inquirer
         .prompt({
             name: 'delete',
