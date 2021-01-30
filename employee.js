@@ -1,6 +1,7 @@
 const mysql = require('mysql');
 const inquirer = require('inquirer');
 require('dotenv').config()
+const figlet = require('figlet');
 
 
 // connection for sql database
@@ -21,10 +22,18 @@ const start = () => {
             message: 'What would you like to do?',
             choices:
                 [
-                    'View departments, roles, employees, or managers',
-                    'Add employee, department, or role',
-                    'Update roles, managers, or departments',
-                    'Delete employee, role, or department',
+                    'View departments',
+                    'View roles',
+                    'View employees',
+                    'View managers',
+                    'Add employee',
+                    'Add department',
+                    'Add role',
+                    'Update employee role',
+                    'Update employee manager',
+                    'Delete employee',
+                    'Delete role',
+                    'Delete department',
                     'Exit',
                 ]
         })
