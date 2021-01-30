@@ -3,6 +3,11 @@ const inquirer = require('inquirer');
 require('dotenv').config()
 const figlet = require('figlet');
 
+// figlet for opening title in command line
+figlet('Employee Tracker!!', (err, transformed) => {
+    if (err) throw err;
+    console.log(transformed);
+});
 
 // connection for sql database
 const connection = mysql.createConnection({
