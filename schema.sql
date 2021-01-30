@@ -13,7 +13,7 @@ PRIMARY KEY (id)
 CREATE TABLE role (
 id INT NOT NULL AUTO_INCREMENT KEY,
 title VARCHAR(30) NOT NULL,
-salary DECIMAL (10,2) NOT NULL,
+salary DECIMAL (10,2),
 department_id INT,
 PRIMARY KEY (id)
 );
@@ -23,5 +23,6 @@ id INT AUTO_INCREMENT KEY,
 first_name VARCHAR(30) NOT NULL,
 last_name VARCHAR(30) NOT NULL,
 role_id INT,
-manager_id INT
+manager_id INT,
+PRIMARY KEY (id)
 );
