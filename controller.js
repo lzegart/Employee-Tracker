@@ -26,6 +26,39 @@ module.exports = {
                ], 
         });
         console.log(startMenu);
+
+        switch (startMenu) {
+            case 'View employees':
+                break;
+            case 'View departments':
+                break;
+            case 'View roles':
+                    break;
+            case 'View managers':
+                break;
+            case 'Add employee':
+                break;
+            case 'Add department':
+                break;
+            case 'Add role':
+                break;
+            case 'Update employee role':
+                break;
+            // case 'Update employee manager':
+            //     break;
+            // case 'Delete employee':
+            //     break;
+            // case 'Delete department':
+            //     break;
+            // case 'Delete role':
+            //     break;
+            case 'Exit':
+                break;
+            default:
+                console.log("Bye!");
+                process.exit();
+                break;
+        }
     }
     
 }
