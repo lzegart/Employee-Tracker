@@ -1,8 +1,8 @@
 const mysql = require('mysql');
-const inquirer = require('inquirer');
 const util = require('util')
 require('dotenv').config()
 const figlet = require('figlet');
+const start = require("./controller")
 
 // connection for sql database
 const connection = mysql.createConnection({
@@ -21,59 +21,13 @@ connection.query = util.promisify(connection.query)
 figlet('Employee Tracker!!', async (err, transformed) => {
     if (err) throw err;
     console.log(transformed);
-    // await start.start();
-
-    const { startMenu } = await inquirer.prompt({
-        name: 'startMenu',
-        type: 'list',
-        message: 'What would you like to do?',
-        choices: [
-            'View departments',
-            'View roles',
-            'View employees',
-            'View managers',
-            'Add employee',
-            'Add department',
-            'Add role',
-            'Update employee role',
-//                     // 'Update employee manager',
-//                     // 'Delete employee',
-//                     // 'Delete role',
-//                     // 'Delete department',
-            'Exit',
-           ], 
-    });
-    console.log(startMenu);
+    await start.taskList();
 });
 
 
 
 
 
-// // function to prompt user to enter/view/edit employee info with inquirer
-// const start = () => {
-//     inquirer
-//         .prompt({
-//             name: 'task',
-//             type: 'list',
-//             message: 'What would you like to do?',
-//             choices:
-//                 [
-//                     'View departments',
-//                     'View roles',
-//                     'View employees',
-//                     'View managers',
-//                     'Add employee',
-//                     'Add department',
-//                     'Add role',
-//                     'Update employee role',
-//                     // 'Update employee manager',
-//                     // 'Delete employee',
-//                     // 'Delete role',
-//                     // 'Delete department',
-//                     'Exit',
-//                 ]
-//         })
 //         .then((answer) => {
 //             if (answer.task === 'View departments') {
 //                 const query = `SELECT * FROM department`
