@@ -13,6 +13,12 @@ const connection = mysql.createConnection({
     database: 'employees_db',
 });
 
+// connect to the mysql server and sql database
+connection.connect((err) => {
+    if (err) throw err;
+    // run the start function after the connection is made to prompt the user
+    // startMenu();
+});
 // turns cb into promise and lets you use .then:
 connection.query = util.promisify(connection.query)
 
@@ -23,9 +29,6 @@ figlet('Employee Tracker!!', async (err, transformed) => {
     console.log(transformed);
     await start.taskList();
 });
-
-
-
 
 
 //         .then((answer) => {
@@ -160,11 +163,3 @@ figlet('Employee Tracker!!', async (err, transformed) => {
 //         }
 //         });
 // };
-
-
-// connect to the mysql server and sql database
-connection.connect((err) => {
-    if (err) throw err;
-    // run the start function after the connection is made to prompt the user
-    // startMenu();
-});
