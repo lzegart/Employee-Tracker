@@ -1,13 +1,12 @@
 const inquirer = require('inquirer');
-const mysql = require('mysql');
+// const mysql = require('mysql');
+const connection = require('./employee');
 const { createConnection } = require('net');
-// const util = require('util')
-// require('dotenv').config()
 
 module.exports = {
-    taskList: async function() {
-        const { startMenu } = await inquirer.prompt({
-            name: 'startMenu',
+    startMenu: async function() {
+        const { taskList } = await inquirer.prompt({
+            name: 'taskList',
             type: 'list',
             message: 'What would you like to do?',
             choices: [
@@ -26,9 +25,9 @@ module.exports = {
                 'Exit',
                ], 
         });
-        console.log(startMenu);
+        // console.log(startMenu);
 
-        switch (startMenu) {
+        switch (taskList) {
             case 'View employees':
                 this.viewEmployees();
                 break;
@@ -41,9 +40,9 @@ module.exports = {
                 this.viewRoles();
                     break;
 
-            case 'View managers':
-                this.viewManagers();
-                break;
+            // case 'View managers':
+            //     this.viewManagers();
+            //     break;
 
             case 'Add employee':
                 this.addEmployee();
@@ -79,24 +78,49 @@ module.exports = {
         }
     },
   viewEmployees: async function () {
-
+    const employees = await connection.query(
+        `SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, department.name AS department, CONCAT(manager.first_name, ' ', manager.last_name) AS manager FROM employee
+        LEFT JOIN role ON employee.role_id = role.id
+        LEFT JOIN department ON role.department_id = department.id
+        LEFT JOIN employee manager ON manager.id = employee.manager_id;`
+    );
+    console.table(
+        employees.map(({ id, first_name, last_name, department, title, salary, manager }) => {
+            return {
+                id,
+                first_name,
+                last_name,
+                department,
+                title,
+                salary,
+                manager
+            };
+        })
+    );    
+    this.startMenu();
   },
   
   viewDepartments: async function () {
     const departments = await connection.query(`SELECT * FROM department`);
     console.table(
         departments.map((department) => {
-        return { id: department.id, department: department.name };
-        })
+        return { 
+            id: department.id, 
+            department: department.name 
+        };
+        }),
     );
     this.startMenu();
   },
 
   viewRoles: async function () {
     const roles = await connection.query(`SELECT * FROM role LEFT JOIN department ON role.department_id = department.id`);
-    console.table(roles.map(({ title, salary, name }) => {
+    console.table(
+        roles.map(({ title, salary, name }) => {
         return {
-            title, salary, department: name
+            title, 
+            salary, 
+            department: name
         };
     }));
     this.startMenu();
@@ -158,13 +182,17 @@ module.exports = {
                 value: employee.id,
             };
         });
-        const { manager_id } = inquirer.prompt({
+        const { manager_id } = await inquirer.prompt({
             name: 'manager_id',
             type: 'list',
             message: 'Who is the manager of the employee?',
             choices: employeeData,
         });
-        console.log(manager_id);
+        // console.log(manager_id);
+
+        newEmployee.manager_id = manager_id;
+        const res = await connection.query(`INSERT INTO employee SET ?`, [newEmployee]);
+        
         console.log("Success!");
         this.startMenu();
     }
@@ -209,6 +237,38 @@ module.exports = {
     console.log("Role added! Data:", title, salary, department_id);
     this.startMenu();
   },  
-};
 
-updateEmpRole: 
+  updateEmpRole: async function () {
+      const employees = await connection.query(`SELECT id, role_id, manager_id, CONCAT(first_name, ' ', last_name) AS name FROM employee`);
+      console.log(employees);
+      
+      const { id } = await inquirer.prompt({
+          name: 'id',
+          type: 'list',
+          message: 'Whose role are you changing?',
+          choices: employees.map(employee => {
+              return {name: employee.name, value: employee.id };
+          }),
+      });
+      const selectedEmp = employees.filter((employee) => employee.id === id)[0];
+      const roles = await connection.query(`SELECT * FROM role`);
+      const {newRoleId} = await inquirer.prompt({
+          name: 'newRoleId',
+          type: 'list',
+          message: 'What would you like the new role to be?',
+          choices: roles.map((role) => {
+              return {
+                  name: role.title,
+                  value: role.id,
+              };
+          }),
+      });
+    //   console.log(newRoleId);
+      const query = await connection.createQuery(`UPDATE employee SET role_id=? WHERE id=?`, [newRoleId, selectedEmp.id]);
+      this.startMenu();
+   
+      //   console.log(selectedEmp);
+      console.log("Employees: ", employees, "ID: ", id);
+      this.startMenu();
+  },
+};

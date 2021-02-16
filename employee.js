@@ -2,7 +2,7 @@ const mysql = require('mysql');
 const util = require('util')
 require('dotenv').config()
 const figlet = require('figlet');
-const start = require("./controller")
+const start = require("./controller");
 
 // connection for sql database
 const connection = mysql.createConnection({
@@ -16,19 +16,21 @@ const connection = mysql.createConnection({
 // connect to the mysql server and sql database
 connection.connect((err) => {
     if (err) throw err;
-    // run the start function after the connection is made to prompt the user
-    // startMenu();
 });
+
 // turns cb into promise and lets you use .then:
 connection.query = util.promisify(connection.query)
 
+module.exports = connection;
 
 // figlet for opening title in command line
-figlet('Employee Tracker!!', async (err, transformed) => {
+figlet('Welcome to the Employee-Tracker!!', async (err, transformed) => {
     if (err) throw err;
     console.log(transformed);
-    await start.taskList();
+    await start.startMenu();
 });
+
+
 
 
 //         .then((answer) => {
