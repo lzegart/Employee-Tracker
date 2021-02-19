@@ -1,7 +1,7 @@
 const inquirer = require('inquirer');
 // const mysql = require('mysql');
 const connection = require('./employee');
-const { createConnection } = require('net');
+// const { createConnection } = require('net');
 
 module.exports = {
     startMenu: async function() {
@@ -13,52 +13,50 @@ module.exports = {
                 'View departments',
                 'View roles',
                 'View employees',
-                'View managers',
+                // 'View managers',
                 'Add employee',
                 'Add department',
                 'Add role',
                 'Update employee role',
-    //                     // 'Update employee manager',
-    //                     // 'Delete employee',
-    //                     // 'Delete role',
-    //                     // 'Delete department',
+                // 'Update employee manager',
+                // 'Delete employee',
+                // 'Delete role',
+                // 'Delete department',
                 'Exit',
                ], 
         });
         // console.log(startMenu);
-
         switch (taskList) {
             case 'View employees':
-                this.viewEmployees();
-                break;
+                return viewEmployees();
 
             case 'View departments':
-                this.viewDepartments();
-                break;
+                // this.viewDepartments();
+                return viewDepartments();
 
             case 'View roles':
-                this.viewRoles();
-                    break;
+                // this.viewRoles();
+                return viewRoles();
 
             // case 'View managers':
             //     this.viewManagers();
             //     break;
 
             case 'Add employee':
-                this.addEmployee();
-                break;
+                // this.addEmployee();
+                return addEmployee();
 
             case 'Add department':
-                this.addDeptartment();
-                break;
+                // this.addDeptartment();
+                return addDeptartment();
 
             case 'Add role':
-                this.addRole();
-                break;
+                // this.addRole();
+                return addRole();
 
             case 'Update employee role':
-                this.updateEmpRole();
-                break;
+                // this.updateEmpRole();
+                return updateEmpRole();
 
             // case 'Update employee manager':
             //     break;
@@ -69,7 +67,8 @@ module.exports = {
             // case 'Delete role':
             //     break;
             case 'Exit':
-                break;
+                // this.exit();
+                // break;
                 
             default:
                 console.log("Bye!");
@@ -241,7 +240,6 @@ module.exports = {
   updateEmpRole: async function () {
       const employees = await connection.query(`SELECT id, role_id, manager_id, CONCAT(first_name, ' ', last_name) AS name FROM employee`);
       console.log(employees);
-      
       const { id } = await inquirer.prompt({
           name: 'id',
           type: 'list',
@@ -271,4 +269,9 @@ module.exports = {
       console.log("Employees: ", employees, "ID: ", id);
       this.startMenu();
   },
+
+  exit: async function () {
+    console.log("Goodbye")
+    connection.end();
+  }
 };
